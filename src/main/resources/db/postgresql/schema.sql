@@ -1,0 +1,30 @@
+CREATE TABLE IF NOT EXISTS orders (
+  id BIGSERIAL PRIMARY KEY,
+  order_number VARCHAR(40) NOT NULL UNIQUE,
+  customer_code VARCHAR(40) NOT NULL,
+  product_code VARCHAR(40) NOT NULL,
+  quantity INTEGER NOT NULL,
+  unit_price NUMERIC(12,2) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  order_date TIMESTAMP NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_orders_customer_date ON orders(customer_code, order_date);
+CREATE INDEX IF NOT EXISTS idx_orders_product_status ON orders(product_code, status);
+
+CREATE TABLE IF NOT EXISTS shipping (
+  id BIGSERIAL PRIMARY KEY,
+  order_id BIGINT NOT NULL UNIQUE REFERENCES orders(id),
+  address_line1 VARCHAR(200) NOT NULL,
+  address_line2 VARCHAR(200),
+  city VARCHAR(80) NOT NULL,
+  state VARCHAR(80) NOT NULL,
+  postal_code VARCHAR(20) NOT NULL,
+  country VARCHAR(60) NOT NULL,
+  status VARCHAR(20) NOT NULL,
+  shipped_date DATE,
+  delivery_date DATE
+);
+
+CREATE INDEX IF NOT EXISTS idx_shipping_status ON shipping(status);
+CREATE INDEX IF NOT EXISTS idx_shipping_postal_code ON shipping(postal_code);

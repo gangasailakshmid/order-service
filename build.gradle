@@ -1,0 +1,68 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '4.0.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.oms.order_service'
+version = '0.0.1-SNAPSHOT'
+description = 'Inventory Management System'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(25)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-h2console'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-json'
+	implementation 'org.springframework.kafka:spring-kafka'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1'
+	implementation 'org.apache.avro:avro:1.12.1'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.postgresql:postgresql'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testImplementation 'org.springframework.kafka:spring-kafka-test'
+	testImplementation 'io.cucumber:cucumber-java:7.20.1'
+	testImplementation 'io.cucumber:cucumber-spring:7.20.1'
+	testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.20.1'
+	testImplementation 'io.gatling:gatling-core-java:3.13.4'
+	testImplementation 'io.gatling:gatling-http-java:3.13.4'
+	testImplementation 'org.junit.platform:junit-platform-suite:1.13.4'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.register('runGatlingSimulation', JavaExec) {
+	group = 'verification'
+	description = 'Run a Gatling simulation. Example: ./gradlew runGatlingSimulation -PsimulationClass=com.oms.order_service.performance.styles.StyleGatlingSimulation -PbaseUrl=http://localhost:8080'
+	classpath = sourceSets.test.runtimeClasspath
+	mainClass = 'io.gatling.app.Gatling'
+	def simClass = project.findProperty('simulationClass') ?: 'com.oms.order_service.performance.styles.StyleGatlingSimulation'
+	def reportDir = "${layout.buildDirectory.get().asFile}/reports/gatling"
+	args = ['-s', simClass.toString(), '-rf', reportDir]
+	if (project.findProperty('baseUrl')) {
+		systemProperty 'performance.baseUrl', project.findProperty('baseUrl').toString()
+	}
+}
