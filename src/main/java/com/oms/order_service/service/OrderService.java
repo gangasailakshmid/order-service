@@ -55,7 +55,9 @@ public class OrderService {
 	private void apply(OrderRequest request, OrderEntity order) {
 		order.setOrderNumber(request.orderNumber());
 		order.setCustomerCode(request.customerCode());
-		order.setProductCode(request.productId());
+		order.setProfileId(request.profileId());
+		order.setProductId(request.productId());
+		order.setProductCode(request.productCode());
 		order.setQuantity(request.quantity());
 		order.setUnitPrice(request.unitPrice());
 		order.setStatus(request.status());
@@ -66,7 +68,8 @@ public class OrderService {
 				order.getId(),
 				order.getOrderNumber(),
 				order.getCustomerCode(),
-				order.getProductCode(),
+				order.getProfileId(),
+				order.getProductId(),
 				order.getProductCode(),
 				order.getQuantity(),
 				order.getUnitPrice(),

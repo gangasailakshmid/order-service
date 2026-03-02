@@ -34,6 +34,12 @@ public class OrderEntity {
 	@Column(name = "customer_code", nullable = false, length = 40)
 	private String customerCode;
 
+	@Column(name = "profile_id", nullable = false)
+	private Long profileId;
+
+	@Column(name = "product_id", nullable = false)
+	private Long productId;
+
 	@Column(name = "product_code", nullable = false, length = 40)
 	private String productCode;
 
